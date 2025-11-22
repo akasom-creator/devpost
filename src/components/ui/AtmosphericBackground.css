@@ -1,0 +1,212 @@
+/* Atmospheric Background Styles */
+
+.atmospheric-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* Fog/Mist Layers */
+.fog-layer {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: radial-gradient(ellipse at center,
+            rgba(100, 100, 100, 0.15) 0%,
+            rgba(50, 50, 50, 0.08) 40%,
+            transparent 70%);
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    /* GPU acceleration */
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+.fog-layer-1 {
+    top: -50%;
+    left: -50%;
+    animation: fogDrift1 30s ease-in-out infinite;
+    opacity: 0.6;
+}
+
+.fog-layer-2 {
+    top: -30%;
+    left: -30%;
+    animation: fogDrift2 40s ease-in-out infinite;
+    animation-delay: -10s;
+    opacity: 0.4;
+}
+
+.fog-layer-3 {
+    top: -20%;
+    left: -60%;
+    animation: fogDrift3 50s ease-in-out infinite;
+    animation-delay: -20s;
+    opacity: 0.3;
+}
+
+/* Fog Animation Keyframes - Using translate3d for GPU acceleration */
+@keyframes fogDrift1 {
+
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate3d(100px, -50px, 0) scale(1.1);
+    }
+
+    50% {
+        transform: translate3d(200px, 0, 0) scale(1);
+    }
+
+    75% {
+        transform: translate3d(100px, 50px, 0) scale(0.9);
+    }
+}
+
+@keyframes fogDrift2 {
+
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate3d(-150px, 80px, 0) scale(1.15);
+    }
+
+    66% {
+        transform: translate3d(-50px, -60px, 0) scale(0.95);
+    }
+}
+
+@keyframes fogDrift3 {
+
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    40% {
+        transform: translate3d(120px, 100px, 0) scale(1.05);
+    }
+
+    80% {
+        transform: translate3d(-80px, -40px, 0) scale(1.1);
+    }
+}
+
+/* Cobweb Decorations */
+.cobweb {
+    position: absolute;
+    opacity: 0.3;
+    pointer-events: none;
+    transform: translate3d(0, 0, 0);
+    /* GPU acceleration */
+    backface-visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.cobweb:hover {
+    opacity: 0.5;
+}
+
+.cobweb-top-left {
+    top: 0;
+    left: 0;
+    transform-origin: top left;
+}
+
+.cobweb-top-right {
+    top: 0;
+    right: 0;
+    transform: scaleX(-1);
+    transform-origin: top right;
+}
+
+.cobweb-bottom-left {
+    bottom: 0;
+    left: 0;
+    transform: scaleY(-1);
+    transform-origin: bottom left;
+}
+
+.cobweb-bottom-right {
+    bottom: 0;
+    right: 0;
+    transform: scale(-1, -1);
+    transform-origin: bottom right;
+}
+
+/* Cracked Glass Texture Overlay */
+.cracked-glass-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.05) 49%, rgba(255, 255, 255, 0.05) 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, rgba(255, 255, 255, 0.05) 49%, rgba(255, 255, 255, 0.05) 51%, transparent 52%),
+        linear-gradient(90deg, transparent 48%, rgba(255, 255, 255, 0.03) 49%, rgba(255, 255, 255, 0.03) 51%, transparent 52%),
+        linear-gradient(0deg, transparent 48%, rgba(255, 255, 255, 0.03) 49%, rgba(255, 255, 255, 0.03) 51%, transparent 52%);
+    background-size:
+        100px 100px,
+        100px 100px,
+        50px 50px,
+        50px 50px;
+    background-position:
+        0 0,
+        25px 25px,
+        0 0,
+        0 0;
+    transform: translate3d(0, 0, 0);
+    /* GPU acceleration */
+    backface-visibility: hidden;
+    mix-blend-mode: overlay;
+}
+
+/* Performance optimization for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .fog-layer {
+        animation: none;
+    }
+
+    .cobweb {
+        transition: none;
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .fog-layer {
+        width: 150%;
+    }
+
+    .cobweb {
+        width: 150px;
+        height: 150px;
+    }
+
+    /* Reduce fog layers on mobile for performance */
+    .fog-layer-3 {
+        display: none;
+    }
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .cobweb {
+        width: 175px;
+        height: 175px;
+    }
+}

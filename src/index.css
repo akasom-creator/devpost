@@ -1,0 +1,162 @@
+/* Google Fonts - Horror themed fonts */
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Butcherman&display=swap');
+
+/* Tailwind CSS import */
+@import "tailwindcss";
+
+/* Custom CSS variables for horror theme */
+@theme {
+  --color-blood-50: #fee2e2;
+  --color-blood-100: #fecaca;
+  --color-blood-500: #DC143C;
+  --color-blood-700: #8B0000;
+  --color-blood-900: #450000;
+
+  --color-darkness-900: #0a0a0a;
+  --color-darkness-800: #1a1a1a;
+  --color-darkness-700: #2a2a2a;
+
+  --font-family-creepy: Creepster, cursive;
+  --font-family-nosifer: Nosifer, cursive;
+  --font-family-butcherman: Butcherman, cursive;
+
+  --animate-blood-drip: bloodDrip 1.2s ease-in forwards;
+  --animate-fog-drift: fogDrift 20s ease-in-out infinite;
+  --animate-flicker: flicker 0.15s infinite;
+  --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes bloodDrip {
+  0% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translate3d(0, 50%, 0) scaleY(2);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translate3d(0, 100%, 0) scaleY(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes fogDrift {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(100px, -50px, 0);
+  }
+}
+
+@keyframes flicker {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(220, 20, 60, 0.8);
+  }
+}
+
+:root {
+  --blood-red: #DC143C;
+  --dark-blood: #8B0000;
+  --pure-black: #0a0a0a;
+  --shadow-glow: 0 0 20px rgba(220, 20, 60, 0.5);
+  --transition-haunting: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  background-color: var(--color-darkness-900);
+  color: white;
+  min-height: 100vh;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+.text-shadow-glow {
+  text-shadow: var(--shadow-glow);
+}
+
+.transition-haunting {
+  transition: var(--transition-haunting);
+}
+
+/* Accessibility: Focus indicators with red glow */
+*:focus-visible {
+  outline: 3px solid var(--blood-red);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(220, 20, 60, 0.3);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid var(--blood-red);
+  outline-offset: 2px;
+  box-shadow: 0 0 20px rgba(220, 20, 60, 0.6);
+}
+
+/* Accessibility: Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable blood drip animations */
+  .animate-blood-drip,
+  .animate-fog-drift,
+  .animate-flicker,
+  .animate-pulse-glow {
+    animation: none !important;
+  }
+}
+
+/* Accessibility: Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--blood-red);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  font-weight: bold;
+  z-index: 9999;
+  border-radius: 0 0 0.5rem 0;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
