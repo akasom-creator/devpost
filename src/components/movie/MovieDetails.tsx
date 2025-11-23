@@ -1,7 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-// @ts-ignore - react-player types issue
-import ReactPlayer from 'react-player';
 import type { MovieDetail } from '../../types/movie.types';
 import { getImageUrl } from '../../utils/api';
 import ScareMeter from '../ui/ScareMeter';
@@ -16,6 +14,8 @@ interface MovieDetailsProps {
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useWatchlist();
   const inWatchlist = isInWatchlist(movie.id);
+  const [trailerError, setTrailerError] = useState(false);
+  const [trailerLoading, setTrailerLoading] = useState(true);
 
   const backdropUrl = getImageUrl(movie.backdropPath, 'BACKDROP_LARGE');
   const posterUrl = getImageUrl(movie.posterPath, 'POSTER_LARGE');
@@ -73,11 +73,11 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               style={{ willChange: 'opacity' }}
             />
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-darkness-900 via-darkness-900/80 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-darkness-900 via-transparent to-darkness-900" />
+            <div className="absolute inset-0 bg-linear-to-t from-darkness-900 via-darkness-900/80 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-r from-darkness-900 via-transparent to-darkness-900" />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-b from-darkness-800 to-darkness-900" />
+          <div className="absolute inset-0 bg-linear-to-b from-darkness-800 to-darkness-900" />
         )}
 
         {/* Title and Basic Info Overlay */}
@@ -149,7 +149,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                 Genres
               </h3>
               <div className="flex flex-wrap gap-2">
-                {movie.genres.map((genre) => (
+                {movie.genres?.map((genre) => (
                   <span
                     key={genre.id}
                     className="px-4 py-2 bg-darkness-800 border border-blood-700 rounded-lg text-gray-300 hover:bg-blood-900 hover:border-blood-500 transition-all duration-300 flex items-center gap-2"
@@ -157,7 +157,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                     <span className="text-xl" aria-hidden="true">{getGenreIcon(genre.name)}</span>
                     {genre.name}
                   </span>
-                ))}
+                )) || <span className="text-gray-400">No genres available</span>}
               </div>
             </motion.div>
 
@@ -170,13 +170,32 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               <h3 className="text-xl font-bold text-blood-500 mb-3 font-creepy">
                 Trailer
               </h3>
-              {movie.trailerKey ? (
+              {movie.trailerKey && !trailerError ? (
                 <div className="relative aspect-video bg-darkness-800 rounded-lg overflow-hidden shadow-lg shadow-blood-900/20">
-                  <ReactPlayer
-                    src={`https://www.youtube.com/watch?v=${movie.trailerKey}`}
-                    width="100%"
-                    height="100%"
-                    controls
+                  {trailerLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-darkness-800 z-10">
+                      <div className="text-center">
+                        <div className="w-12 h-12 border-4 border-blood-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <p className="text-blood-500 text-lg">Loading trailer...</p>
+                      </div>
+                    </div>
+                  )}
+                  <iframe
+                    src={`https://www.youtube.com/embed/${movie.trailerKey}?rel=0&modestbranding=1`}
+                    title={`${movie.title} trailer`}
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    onLoad={() => {
+                      console.log('YouTube iframe loaded successfully');
+                      setTrailerLoading(false);
+                    }}
+                    onError={() => {
+                      console.error('YouTube iframe failed to load for video:', movie.trailerKey);
+                      setTrailerError(true);
+                      setTrailerLoading(false);
+                    }}
                   />
                 </div>
               ) : (
@@ -191,11 +210,27 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
                       <path d="M8 5v14l11-7z" />
                     </svg>
                     <p className="text-gray-400 text-lg">
-                      No trailer available
+                      {trailerError ? 'Trailer unavailable' : 'No trailer available'}
                     </p>
                     <p className="text-gray-600 text-sm mt-2">
-                      The spirits haven't revealed this yet...
+                      {trailerError
+                        ? 'This trailer cannot be displayed safely'
+                        : 'The spirits haven\'t revealed this yet...'
+                      }
                     </p>
+                    {movie.trailerKey && (
+                      <a
+                        href={`https://www.youtube.com/watch?v=${movie.trailerKey}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-blood-700 hover:bg-blood-600 text-white rounded-lg font-medium transition-colors duration-300"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                        Watch on YouTube
+                      </a>
+                    )}
                   </div>
                 </div>
               )}
@@ -214,7 +249,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               className="lg:sticky lg:top-8 space-y-6"
             >
               {/* Poster */}
-              <div className="relative aspect-[2/3] max-w-md mx-auto lg:max-w-none rounded-lg overflow-hidden shadow-2xl shadow-blood-900/30">
+              <div className="relative aspect-2/3 max-w-md mx-auto lg:max-w-none rounded-lg overflow-hidden shadow-2xl shadow-blood-900/30">
                 {posterUrl ? (
                   <img
                     src={posterUrl}
@@ -240,7 +275,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
               {/* Watchlist Button - Touch target minimum 44x44px */}
               <button
                 onClick={handleWatchlistToggle}
-                className={`w-full py-4 px-6 min-h-[44px] rounded-lg font-bold text-base md:text-lg transition-all duration-300 flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-blood-500 focus:ring-offset-2 focus:ring-offset-darkness-900 ${
+                className={`w-full py-4 px-6 min-h-11 rounded-lg font-bold text-base md:text-lg transition-all duration-300 flex items-center justify-center gap-3 focus:outline-none focus:ring-2 focus:ring-blood-500 focus:ring-offset-2 focus:ring-offset-darkness-900 ${
                   inWatchlist
                     ? 'bg-blood-700 hover:bg-blood-600 text-white'
                     : 'bg-darkness-800 hover:bg-blood-900 text-blood-500 border-2 border-blood-700 hover:border-blood-500'
@@ -312,3 +347,4 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {
 };
 
 export default MovieDetails;
+

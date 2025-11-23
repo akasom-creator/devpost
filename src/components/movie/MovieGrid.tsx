@@ -72,8 +72,8 @@ const MovieGrid: React.FC<MovieGridProps> = ({
 
   // Loading skeleton card
   const SkeletonCard = () => (
-    <div className="relative aspect-[2/3] bg-darkness-800 rounded-lg overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-darkness-800 via-darkness-700 to-darkness-800 animate-pulse" />
+    <div className="relative aspect-2/3 bg-darkness-800 rounded-lg overflow-hidden">
+      <div className="absolute inset-0 bg-linear-to-r from-darkness-800 via-darkness-700 to-darkness-800 animate-pulse" />
       <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2">
         <div className="h-4 bg-darkness-700 rounded animate-pulse" />
         <div className="h-3 bg-darkness-700 rounded w-2/3 animate-pulse" />
@@ -134,8 +134,8 @@ const MovieGrid: React.FC<MovieGridProps> = ({
         aria-label="Movie grid"
       >
         {movies.map((movie) => (
-          <motion.div 
-            key={movie.id} 
+          <motion.div
+            key={movie.id}
             variants={itemVariants}
             style={{ willChange: 'transform, opacity' }}
             role="listitem"

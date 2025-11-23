@@ -61,7 +61,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', duration: 0.5 }}
-          className="flex-shrink-0"
+          className="shrink-0"
         >
           <svg
             className="w-12 h-12 text-blood-500"
@@ -78,7 +78,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
           <h3 className="text-xl font-bold text-blood-500 mb-2 font-creepy">
             Error
           </h3>
-          <p className="text-gray-300 mb-4 break-words">
+          <p className="text-gray-300 mb-4 wrap-break-word">
             {errorMessage}
           </p>
 

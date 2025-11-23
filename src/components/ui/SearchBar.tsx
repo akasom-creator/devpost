@@ -27,11 +27,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       window.clearTimeout(debounceTimerRef.current);
     }
 
-    // Only search if:
-    // 1. Query has at least 3 characters, OR
+    // Search if:
+    // 1. Query is not empty, OR
     // 2. Query is empty AND user has interacted (to reset search)
     // Don't search on initial empty query to prevent automatic navigation
-    if (query.length >= 3 || (query.length === 0 && hasUserInteracted)) {
+    if (query.trim() || (query.length === 0 && hasUserInteracted)) {
       debounceTimerRef.current = window.setTimeout(() => {
         onSearch(query);
       }, 500);
@@ -51,14 +51,27 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     inputRef.current?.focus();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      // Trigger immediate search on Enter
+  const handleSearchClick = () => {
+    // Trigger search if query is not empty
+    if (query.trim()) {
       if (debounceTimerRef.current !== null) {
         window.clearTimeout(debounceTimerRef.current);
       }
       setHasUserInteracted(true);
       onSearch(query);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      // Trigger immediate search if query is not empty
+      if (query.trim()) {
+        if (debounceTimerRef.current !== null) {
+          window.clearTimeout(debounceTimerRef.current);
+        }
+        setHasUserInteracted(true);
+        onSearch(query);
+      }
     } else if (e.key === 'Escape') {
       // Clear search on Escape
       handleClear();
@@ -112,12 +125,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             }
           `}
           aria-label="Search horror movies"
-          aria-describedby={query.length > 0 && query.length < 3 ? 'search-hint' : undefined}
+          aria-describedby={undefined}
         />
 
         {/* Loading Indicator */}
         {isLoading && (
-          <div className="absolute right-12 top-1/2 -translate-y-1/2" role="status" aria-label="Searching">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2" role="status" aria-label="Searching">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
@@ -148,6 +161,47 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           </div>
         )}
 
+        {/* Search Button - Touch target minimum 44x44px */}
+        {query && !isLoading && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={handleSearchClick}
+            disabled={!query.trim()}
+            className={`
+              absolute right-12 top-1/2 -translate-y-1/2
+              p-2 min-w-[36px] min-h-[36px] rounded-full
+              flex items-center justify-center
+              transition-colors duration-300
+              group
+              focus:outline-none focus:ring-2 focus:ring-blood-500 focus:ring-offset-2 focus:ring-offset-darkness-900
+              ${query.trim()
+                ? 'bg-blood-700 hover:bg-blood-600'
+                : 'bg-gray-600 cursor-not-allowed opacity-50'
+              }
+            `}
+            aria-label="Search"
+            type="button"
+          >
+            {/* Search Icon */}
+            <svg
+              className="w-4 h-4 text-white group-hover:scale-110 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </motion.button>
+        )}
+
         {/* Clear Button - Touch target minimum 44x44px */}
         {query && !isLoading && (
           <motion.button
@@ -159,7 +213,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               absolute right-2 top-1/2 -translate-y-1/2
               p-2 min-w-[36px] min-h-[36px] rounded-full
               flex items-center justify-center
-              bg-blood-700 hover:bg-blood-500
+              bg-darkness-600 hover:bg-blood-700
               transition-colors duration-300
               group
               focus:outline-none focus:ring-2 focus:ring-blood-500 focus:ring-offset-2 focus:ring-offset-darkness-900
@@ -169,7 +223,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           >
             {/* Blood Splatter Icon (X) */}
             <svg
-              className="w-4 h-4 text-white group-hover:scale-110 transition-transform"
+              className="w-4 h-4 text-gray-400 group-hover:text-white group-hover:scale-110 transition-all"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -186,19 +240,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         )}
       </div>
 
-      {/* Character count hint */}
-      {query.length > 0 && query.length < 3 && (
-        <motion.p
-          id="search-hint"
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute left-0 top-full mt-1 text-xs text-gray-500"
-          role="status"
-          aria-live="polite"
-        >
-          Type at least 3 characters to search
-        </motion.p>
-      )}
     </div>
   );
 };

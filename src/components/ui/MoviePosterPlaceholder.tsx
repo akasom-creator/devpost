@@ -15,8 +15,8 @@ const MoviePosterPlaceholder: React.FC<MoviePosterPlaceholderProps> = ({
   className = ''
 }) => {
   return (
-    <div 
-      className={`relative w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-darkness-800 via-darkness-700 to-darkness-800 ${className}`}
+    <div
+      className={`relative w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-darkness-800 via-darkness-700 to-darkness-800 ${className}`}
       role="img"
       aria-label={`${title} - No poster available`}
     >

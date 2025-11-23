@@ -39,7 +39,7 @@ const MovieRecommendations: React.FC<MovieRecommendationsProps> = ({ movieId, mo
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {Array.from({ length: 4 }).map((_, index) => (
                         <div key={index} className="animate-pulse">
-                            <div className="aspect-[2/3] bg-darkness-800 rounded-lg mb-2"></div>
+                            <div className="aspect-2/3 bg-darkness-800 rounded-lg mb-2"></div>
                             <div className="h-4 bg-darkness-700 rounded mb-1"></div>
                             <div className="h-3 bg-darkness-700 rounded w-2/3"></div>
                         </div>

@@ -11,11 +11,11 @@ export default function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const movieId = id ? parseInt(id, 10) : 0;
-  
+
   const { movie, isLoading, error } = useMovieDetails(movieId);
   const { triggerDrip, drips } = useBloodDrip();
 
-  // Trigger blood drip animation on page load (only once per movie)
+  // Trigger blood drip animation on page load
   useEffect(() => {
     // Trigger multiple blood drips at random positions on load
     const delays = [0, 300, 600];
@@ -27,7 +27,7 @@ export default function MovieDetailPage() {
         triggerDrip(x, y);
       }, delay);
     });
-  }, [movieId, triggerDrip]);
+  }, [triggerDrip]); // Remove movieId dependency to prevent re-running on every navigation
 
   // Handle invalid movie ID
   if (!movieId || movieId <= 0) {
@@ -139,18 +139,18 @@ export default function MovieDetailPage() {
       className="min-h-screen bg-darkness-900 text-white"
       style={{ willChange: 'opacity' }}
     >
-      <AtmosphericBackground />
-      
-      {/* Blood Drip Animations */}
-      {drips.map((drip) => (
-        <BloodDrip key={drip.id} x={drip.x} y={drip.y} />
-      ))}
+     <AtmosphericBackground />
 
-      <div className="relative z-10 pt-20">
-        <MovieDetails movie={movie} />
-      </div>
-    </motion.div>
-  );
+     {/* Blood Drip Animations */}
+     {drips.map((drip) => (
+       <BloodDrip key={drip.id} x={drip.x} y={drip.y} />
+     ))}
+
+     <div className="relative z-10 pt-20">
+       <MovieDetails movie={movie} />
+     </div>
+   </motion.div>
+ );
 }
 
 /**

@@ -111,7 +111,7 @@ export default function FilterPanel({
       {/* Mobile Toggle Button - Touch target minimum 44x44px */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="lg:hidden fixed top-20 left-4 z-50 bg-darkness-800 border-2 border-blood-700 rounded-lg p-3 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-blood-900 transition-all duration-300 hover:shadow-[0_0_20px_rgba(220,20,60,0.5)] focus:outline-none focus:ring-2 focus:ring-blood-500 focus:ring-offset-2 focus:ring-offset-darkness-900"
+        className="lg:hidden fixed top-20 left-4 z-50 bg-darkness-800 border-2 border-blood-700 rounded-lg p-3 min-w-11 min-h-11 flex items-center justify-center hover:bg-blood-900 transition-all duration-300 hover:shadow-[0_0_20px_rgba(220,20,60,0.5)] focus:outline-none focus:ring-2 focus:ring-blood-500 focus:ring-offset-2 focus:ring-offset-darkness-900"
         aria-label={isCollapsed ? "Open filter panel" : "Close filter panel"}
         aria-expanded={!isCollapsed}
         aria-controls="filter-panel"
@@ -187,7 +187,7 @@ export default function FilterPanel({
                 >
                   <div
                     className={`
-                      flex-shrink-0 transition-colors duration-300
+                      shrink-0 transition-colors duration-300
                       ${isActive ? 'text-blood-500' : 'text-gray-400'}
                     `}
                   >
@@ -204,7 +204,7 @@ export default function FilterPanel({
                   
                   {/* Active Indicator */}
                   {isActive && (
-                    <div className="ml-auto flex-shrink-0" aria-hidden="true">
+                    <div className="ml-auto shrink-0" aria-hidden="true">
                       <svg
                         className="w-5 h-5 text-blood-500"
                         fill="currentColor"

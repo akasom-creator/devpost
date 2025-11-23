@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import { AtmosphericBackground } from '../components/ui/AtmosphericBackground';
 import FilterPanel from '../components/ui/FilterPanel';
 import MovieGrid from '../components/movie/MovieGrid';
 import ErrorMessage from '../components/ui/ErrorMessage';
+import { SearchBar } from '../components/ui/SearchBar';
 import { useMovies } from '../hooks/useMovies';
 import { useGenres } from '../hooks/useGenres';
 import { useBloodDrip } from '../hooks/useBloodDrip';
@@ -15,7 +16,8 @@ import { pageTransitionVariants } from '../utils/animations';
 const HORROR_GENRE_ID = 27;
 
 export default function Home() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [selectedGenres, setSelectedGenres] = useState<number[]>([HORROR_GENRE_ID]);
   const [yearRange, setYearRange] = useState({ min: 1970, max: new Date().getFullYear() });
   const [ratingRange, setRatingRange] = useState({ min: 0, max: 10 });
@@ -45,13 +47,22 @@ export default function Home() {
     queryClient.invalidateQueries({ queryKey: ['movies'] });
   };
 
+  // Handle search
+  const handleSearch = (query: string) => {
+    if (query.trim()) {
+      setSearchParams({ search: query.trim() });
+    } else {
+      setSearchParams({});
+    }
+  };
+
   // Set initial selected genres when genres are loaded
   useEffect(() => {
     if (availableGenres.length > 0 && selectedGenres.length === 1 && selectedGenres[0] === HORROR_GENRE_ID) {
       // Keep horror selected by default
       setSelectedGenres([HORROR_GENRE_ID]);
     }
-  }, [availableGenres, selectedGenres]);
+  }, [availableGenres]); // Remove selectedGenres from dependencies to prevent infinite loop
 
   // Trigger blood drip animation on page load
   useEffect(() => {
@@ -65,7 +76,7 @@ export default function Home() {
         triggerDrip(x, y);
       }, delay);
     });
-  }, [triggerDrip]);
+  }, []); // Remove triggerDrip dependency to prevent infinite loop
 
   // Handle genre toggle
   const handleGenreToggle = (genreId: number) => {
@@ -129,11 +140,25 @@ export default function Home() {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-creepy text-blood-500 mb-2 animate-flicker">
                 {searchQuery ? 'Search Results' : 'Discover Horror'}
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-gray-400 text-lg mb-6">
                 {searchQuery
                   ? `Searching for "${searchQuery}"`
                   : 'Explore the darkest corners of cinema'}
               </p>
+
+              {/* Search Bar */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="flex justify-center"
+              >
+                <SearchBar
+                  onSearch={handleSearch}
+                  placeholder="Search for horror movies..."
+                  isLoading={isLoading}
+                />
+              </motion.div>
             </motion.div>
 
             {/* Error State */}

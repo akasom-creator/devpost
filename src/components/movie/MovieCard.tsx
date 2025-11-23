@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Movie } from '../../types/movie.types';
 import { getImageUrl } from '../../utils/api';
@@ -13,7 +12,6 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
-  const navigate = useNavigate();
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useWatchlist();
   const { triggerDrip, drips } = useBloodDrip();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -49,14 +47,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     };
   }, []);
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('Navigating to movie:', movie.id);
-    navigate(`/movie/${movie.id}`);
-  };
-
   const handleWatchlistToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (inWatchlist) {
       removeFromWatchlist(movie.id);
@@ -79,21 +71,17 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     setIsHovered(false);
   };
 
+  const handleCardClick = () => {
+    window.location.href = `/movie/${movie.id}`;
+  };
+
   return (
-    <motion.div
+    <div
       ref={cardRef}
       className="relative group cursor-pointer"
       onClick={handleCardClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          navigate(`/movie/${movie.id}`);
-        }
-      }}
-      whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.3 }}
       style={{
         boxShadow: isHovered
           ? '0 0 20px rgba(220, 20, 60, 0.5)'
@@ -103,6 +91,12 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       role="article"
       aria-label={`${movie.title} - Rating ${movie.voteAverage.toFixed(1)} out of 10`}
       tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleCardClick();
+        }
+      }}
     >
       {/* Blood drip container */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
@@ -173,11 +167,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       </div>
 
       {/* Movie poster */}
-      <div className="relative aspect-[2/3] bg-darkness-800 overflow-hidden rounded-lg">
+      <div className="relative aspect-2/3 bg-darkness-800 overflow-hidden rounded-lg">
         {isVisible && posterUrl ? (
           <>
             {!isImageLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-darkness-800 via-darkness-700 to-darkness-800 animate-pulse">
+              <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-darkness-800 via-darkness-700 to-darkness-800 animate-pulse">
                 <div className="w-12 h-12 border-4 border-blood-500 border-t-transparent rounded-full animate-spin" style={{ willChange: 'transform' }} />
               </div>
             )}
@@ -201,7 +195,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
         {/* Watchlist button - Touch target minimum 44x44px */}
         <button
           onClick={handleWatchlistToggle}
-          className="absolute top-2 right-2 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center bg-darkness-900 bg-opacity-80 rounded-full hover:bg-opacity-100 transition-all duration-300 z-10 focus:outline-none focus:ring-2 focus:ring-blood-500 focus:ring-offset-2 focus:ring-offset-darkness-900"
+          className="absolute top-2 right-2 p-3 min-w-11 min-h-11 flex items-center justify-center bg-darkness-900 bg-opacity-80 rounded-full hover:bg-opacity-100 transition-all duration-300 z-10 focus:outline-none focus:ring-2 focus:ring-blood-500 focus:ring-offset-2 focus:ring-offset-darkness-900"
           aria-label={inWatchlist ? `Remove ${movie.title} from watchlist` : `Add ${movie.title} to watchlist`}
           aria-pressed={inWatchlist}
         >
@@ -246,8 +240,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
           </span>
         </div>
       </div>
-    </motion.div>
-  );
+  </div>
+);
 };
 
 export default MovieCard;

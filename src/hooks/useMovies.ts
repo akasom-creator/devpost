@@ -41,7 +41,7 @@ export function useMovies(options: UseMoviesOptions = {}): UseMoviesReturn {
         queryKey: ['movies', { genreIds, searchQuery, yearRange, ratingRange, runtimeFilter, sortBy }],
         queryFn: async ({ pageParam = 1 }) => {
             // Use search if query is provided, otherwise discover
-            if (searchQuery && searchQuery.trim().length >= 3) {
+            if (searchQuery && searchQuery.trim()) {
                 return await searchMovies(searchQuery, pageParam);
             }
             return await discoverHorrorMovies(pageParam, genreIds, yearRange, ratingRange, runtimeFilter, sortBy);

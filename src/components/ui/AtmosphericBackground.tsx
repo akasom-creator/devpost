@@ -3,13 +3,13 @@ import './AtmosphericBackground.css';
 
 /**
  * AtmosphericBackground Component
- * 
+ *
  * Creates an immersive horror atmosphere with:
  * - Animated fog/mist layers
  * - Cobweb decorations in corners
  * - Cracked glass texture overlay
  * - Subtle parallax effect on scroll
- * 
+ *
  * Optimized with GPU acceleration and will-change properties
  */
 export const AtmosphericBackground = () => {

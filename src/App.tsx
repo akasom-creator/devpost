@@ -18,7 +18,7 @@ function App() {
               Skip to main content
             </a>
             <Navbar />
-            <main id="main-content" className="flex-grow">
+            <main id="main-content" className="grow">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/movie/:id" element={<MovieDetailPage />} />
