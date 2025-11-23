@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import { AtmosphericBackground } from '../components/ui/AtmosphericBackground';
@@ -17,7 +17,6 @@ const HORROR_GENRE_ID = 27;
 
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const [selectedGenres, setSelectedGenres] = useState<number[]>([HORROR_GENRE_ID]);
   const [yearRange, setYearRange] = useState({ min: 1970, max: new Date().getFullYear() });
   const [ratingRange, setRatingRange] = useState({ min: 0, max: 10 });
